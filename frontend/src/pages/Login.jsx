@@ -77,7 +77,7 @@ const Login = () => {
             <Button type="submit" className="mt-4">
               Submit
             </Button>
-            <Link to="/register" className="mt-3 d-block">
+            <Link to="/register" className="mt-3 d-block tex">
               Register Now
             </Link>
           </Form>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Router from "../routes/Router";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
+import AdminNavbar from "../components/admin/AdminNavBar";
 
 const Layouts = () => {
   //   const token = localStorage.getItem("jsonwebtoken");
@@ -29,7 +30,7 @@ const Layouts = () => {
           <Footer />
         </>
       )} */}
-
+      <AdminNavbar />
       <Router />
     </div>
   );
