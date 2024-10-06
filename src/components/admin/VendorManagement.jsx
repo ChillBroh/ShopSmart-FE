@@ -3,17 +3,12 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import Image from "react-bootstrap/Image";
-import registerImage from "../assets/user/register.jpg"; // Update with your actual image path
-import { Link, useNavigate } from "react-router-dom";
-import axios from "../api/axiosInstance";
-import InputGroup from "react-bootstrap/InputGroup";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import Toast from "../components/common/Toast"; // Import your Toast component
+import Toast from "../common/Toast";
+import axios from "../../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const VendorManagement = () => {
   const [validated, setValidated] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -33,23 +28,24 @@ const Register = () => {
       event.stopPropagation();
     } else {
       try {
-        const response = await axios.post("/User/Register", formData);
+        const response = await axios.post("/User/Register", formData); // Adjust the endpoint based on your API
         console.log(response.data);
-        setToastMessage("Registration successful!");
+        setToastMessage("Vendor added successfully!");
         setShowToast(true);
 
-        // Delay navigation for a few seconds to allow the toast to appear
+        // Optionally, navigate to another page after a short delay
         setTimeout(() => {
-          navigate("/login");
-        }, 2000); // Adjust the duration as needed (2000 ms = 2 seconds)
+          navigate("/vendors"); // Adjust the redirect path as needed
+        }, 2000);
       } catch (error) {
-        console.error("Error registering user:", error);
-        setToastMessage("Registration failed!");
+        console.error("Error adding vendor:", error);
+        setToastMessage("Failed to add vendor!");
         setShowToast(true);
       }
     }
     setValidated(true);
   };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
@@ -58,18 +54,14 @@ const Register = () => {
     }));
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
-  };
-
   return (
-    <div className="pt-5">
+    <div className="">
       <Row className="align-items-center px-5">
         {/* Left side for form */}
-        <Col md={6}>
-          <h2 className="text-lg mb-5 mt-5">Create Your Account</h2>
+        <Col md={12}>
+          <h2 className="text-lg mb-5 mt-5">Add New Vendor</h2>
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <Form.Group as={Col} controlId="validationCustomFirstName">
+            <Form.Group as={Col} controlId="validationCustomUsername">
               <Form.Label>Username</Form.Label>
               <Form.Control
                 type="text"
@@ -80,7 +72,7 @@ const Register = () => {
                 required
               />
               <Form.Control.Feedback type="invalid">
-                Please input your Username!
+                Please input the vendor's username!
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -109,26 +101,17 @@ const Register = () => {
               className="mt-3"
             >
               <Form.Label>Password</Form.Label>
-              <InputGroup hasValidation>
-                <Form.Control
-                  type={showPassword ? "text" : "password"} // Toggle input type between text and password
-                  name="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-                <Button
-                  variant="outline-secondary"
-                  onClick={togglePasswordVisibility}
-                  style={{ borderRadius: "0 4px 4px 0" }}
-                >
-                  {showPassword ? <FaEye /> : <FaEyeSlash />}
-                </Button>
-                <Form.Control.Feedback type="invalid">
-                  Please provide a password.
-                </Form.Control.Feedback>
-              </InputGroup>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                Please provide a password!
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group
@@ -150,18 +133,11 @@ const Register = () => {
               </Form.Control.Feedback>
             </Form.Group>
 
-            <Button type="submit" className="mt-4">
-              Register
-            </Button>
-            <Link to="/login" className="mt-3 d-block text-decoration-none">
-              Already a member? Login
-            </Link>
+            {/* Align button to the right */}
+            <Form.Group as={Col} className="mt-4 text-end">
+              <Button type="submit">Add Vendor</Button>
+            </Form.Group>
           </Form>
-        </Col>
-
-        {/* Right side for image */}
-        <Col md={6}>
-          <Image src={registerImage} fluid />
         </Col>
       </Row>
 
@@ -171,4 +147,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default VendorManagement;

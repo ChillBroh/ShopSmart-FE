@@ -5,6 +5,7 @@ import Register from "../pages/Register";
 import Home from "../pages/Home";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ProtectedRoute from "./ProtectedRoute";
+import VendorManagement from "../components/admin/VendorManagement";
 
 const Router = () => {
   return (
@@ -16,10 +17,18 @@ const Router = () => {
 
       {/* Admin Routes */}
       <Route
-        path="/admin/home"
+        path="/admin/dashboard"
         element={
           <ProtectedRoute roleRequired="Administrator">
             <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/vendor-management"
+        element={
+          <ProtectedRoute roleRequired="Administrator">
+            <VendorManagement />
           </ProtectedRoute>
         }
       />

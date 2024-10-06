@@ -4,8 +4,11 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-dark text-light py-4">
-      <Container>
+    <footer
+      className="bg-dark text-light  py-4 w-100 position-relative bottom-0 d-flex flex-column justify-content-center align-items-center"
+      style={{ backgroundColor: "#1e40af", marginTop: "100px" }}
+    >
+      <Container className="flex-grow-1">
         <Row className="align-items-center">
           <Col md={4} className="mb-3 mb-md-0">
             <h4 className="mb-3">ShopSmart</h4>
@@ -58,14 +61,14 @@ const Footer = () => {
             </div>
           </Col>
         </Row>
-        <Row className="mt-4">
-          <Col className="text-center">
-            <p className="mb-0">
-              &copy; {new Date().getFullYear()} ShopSmart. All Rights Reserved.
-            </p>
-          </Col>
-        </Row>
       </Container>
+      <Row className="mt-4">
+        <Col className="text-center">
+          <p className="mb-0">
+            &copy; {new Date().getFullYear()} ShopSmart. All Rights Reserved.
+          </p>
+        </Col>
+      </Row>
     </footer>
   );
 };

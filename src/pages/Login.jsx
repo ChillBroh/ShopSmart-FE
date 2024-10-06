@@ -7,9 +7,9 @@ import Row from "react-bootstrap/Row";
 import Image from "react-bootstrap/Image";
 import signIn from "../assets/user/signin.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "../api/axiosInstance";
+import Toaster from "../components/common/Toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,6 +20,11 @@ const Login = () => {
     password: "",
   });
 
+  // State for Toaster
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success"); // Default to success
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -29,20 +34,25 @@ const Login = () => {
       try {
         const response = await axios.post("/User/Login", formData);
         const payload = response.data.loggedInUser;
+        setToastMessage("Login successful!");
+        setToastType("success"); // Set toast type to success
+        setShowToast(true);
         localStorage.setItem("jsonwebtoken", JSON.stringify(payload.token));
         localStorage.setItem("user", JSON.stringify(payload));
         if (payload.role === "Administrator") {
-          navigate("/admin/home");
+          navigate("/admin/dashboard");
         } else if (payload.role === "Vendor") {
-          navigate("/vendor/home");
+          navigate("/vendor/dashboard");
         } else if (payload.role === "CSR") {
-          navigate("/csr/home");
+          navigate("/csr/dashboard");
         }
-        alert("Login successful!");
+
         window.location.reload();
       } catch (error) {
         console.error("Error Login user:", error);
-        alert("Login failed!");
+        setToastMessage("Login failed! Please check your credentials.");
+        setToastType("error"); // Set toast type to error
+        setShowToast(true);
       }
     }
     setValidated(true);
@@ -59,6 +69,9 @@ const Login = () => {
   const togglePasswordVisibility = () => {
     setShowPassword((showPassword) => !showPassword);
   };
+
+  // Close handler for toast
+  const handleToastClose = () => setShowToast(false);
 
   return (
     <div className="pt-5">
@@ -124,6 +137,15 @@ const Login = () => {
           </Form>
         </Col>
       </Row>
+
+      {/* Show Toaster if it's visible */}
+      {showToast && (
+        <Toaster
+          text={toastMessage}
+          type={toastType}
+          onClose={handleToastClose} // Pass the close handler
+        />
+      )}
     </div>
   );
 };
