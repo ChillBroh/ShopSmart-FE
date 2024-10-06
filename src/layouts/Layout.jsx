@@ -1,37 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import Navbar from "../components/common/Header";
 import Router from "../routes/Router";
-import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
-import AdminNavbar from "../components/admin/AdminNavBar";
+import AdminNavBar from "../components/admin/AdminNavBar";
+import VendorNavBar from "../components/vendor/VendorNavBar";
+import CSRNavBar from "../components/csr/CSRNavBar";
 
 const Layouts = () => {
-  //   const token = localStorage.getItem("jsonwebtoken");
-  //   const payload = JSON.parse(token);
-  //   const role = payload?.decodedJWT.userRole;
+  const token = localStorage.getItem("user");
+  const payload = JSON.parse(token);
+  const role = payload?.role;
+
+  const renderNavBar = () => {
+    switch (role) {
+      case "Administrator":
+        return <AdminNavBar />;
+      case "Vendor":
+        return <VendorNavBar />;
+      case "CSR":
+        return <CSRNavBar />;
+      default:
+        return <Navbar />;
+    }
+  };
 
   return (
     <div>
-      {/* {role === "admin" ? (
-        <>
-          <Header />
-          <Router />
-          <Footer />
-        </>
-      ) : role === "instructor" ? (
-        <>
-          <Header />
-          <Router />
-          <Footer />
-        </>
-      ) : (
-        <>
-          <Header />
-          <Router />
-          <Footer />
-        </>
-      )} */}
-      <AdminNavbar />
+      {renderNavBar()}
       <Router />
+      <Footer />
     </div>
   );
 };

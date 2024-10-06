@@ -1,7 +1,17 @@
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const AdminNavbar = ({ username, onLogout }) => {
+const AdminNavbar = () => {
+  const payload = localStorage.getItem("user");
+  const user = payload ? JSON.parse(payload) : null;
+  const navigate = useNavigate();
+  const onLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("jsonwebtoken");
+    navigate("/login");
+    window.location.reload();
+  };
   return (
     <Navbar bg="light" expand="lg" className="mb-4">
       <Navbar.Brand as={Link} to="/admin/dashboard" className="px-3">
@@ -30,7 +40,11 @@ const AdminNavbar = ({ username, onLogout }) => {
           </Nav.Link>
         </Nav>
         <Nav>
-          <NavDropdown title="ishara" id="basic-nav-dropdown" className="px-5">
+          <NavDropdown
+            title={user?.userName || "Admin"}
+            id="basic-nav-dropdown"
+            className="px-5"
+          >
             <NavDropdown.Item onClick={onLogout} className="">
               Logout
             </NavDropdown.Item>
