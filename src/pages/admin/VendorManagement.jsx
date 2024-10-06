@@ -3,9 +3,9 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import Toast from "../common/Toast";
 import axios from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const VendorManagement = () => {
   const [validated, setValidated] = useState(false);
@@ -15,11 +15,8 @@ const VendorManagement = () => {
     email: "",
     password: "",
     phoneNumber: "",
+    role: 1,
   });
-
-  // State for Toast
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,8 +27,13 @@ const VendorManagement = () => {
       try {
         const response = await axios.post("/User/Register", formData); // Adjust the endpoint based on your API
         console.log(response.data);
-        setToastMessage("Vendor added successfully!");
-        setShowToast(true);
+
+        // Show success alert
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Vendor added successfully!",
+        });
 
         // Optionally, navigate to another page after a short delay
         setTimeout(() => {
@@ -39,8 +41,13 @@ const VendorManagement = () => {
         }, 2000);
       } catch (error) {
         console.error("Error adding vendor:", error);
-        setToastMessage("Failed to add vendor!");
-        setShowToast(true);
+
+        // Show error alert
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "Failed to add vendor!",
+        });
       }
     }
     setValidated(true);
@@ -140,9 +147,6 @@ const VendorManagement = () => {
           </Form>
         </Col>
       </Row>
-
-      {/* Show Toast if it's visible */}
-      {showToast && <Toast text={toastMessage} />}
     </div>
   );
 };

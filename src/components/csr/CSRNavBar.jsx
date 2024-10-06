@@ -4,9 +4,7 @@ import { Link } from "react-router-dom";
 const AdminNavbar = ({ username, onLogout }) => {
   return (
     <Navbar bg="light" expand="lg" className="mb-4">
-      <Navbar.Brand as={Link} to="/admin/dashboard" className="px-3">
-        Admin Panel
-      </Navbar.Brand>
+      <Navbar.Brand className="px-3">Admin Panel</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mx-auto">

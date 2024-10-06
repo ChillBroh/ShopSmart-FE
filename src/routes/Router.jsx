@@ -5,7 +5,11 @@ import Register from "../pages/Register";
 import Home from "../pages/Home";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ProtectedRoute from "./ProtectedRoute";
-import VendorManagement from "../components/admin/VendorManagement";
+import VendorManagement from "../pages/admin/VendorManagement";
+import ProductManagement from "../pages/admin/ProductManagement";
+import UserManagement from "../pages/admin/UserManagement";
+import VendorDashboard from "../pages/vendor/VendorDashboard";
+import ProductPage from "../pages/vendor/Product";
 
 const Router = () => {
   return (
@@ -32,7 +36,40 @@ const Router = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/admin/user-management"
+        element={
+          <ProtectedRoute roleRequired="Administrator">
+            <UserManagement />
+          </ProtectedRoute>
+        }
+      />
 
+      <Route
+        path="/admin/product-management"
+        element={
+          <ProtectedRoute roleRequired="Administrator">
+            <ProductManagement />
+          </ProtectedRoute>
+        }
+      />
+      {/* Vendor Routes */}
+      <Route
+        path="/vendor/dashboard"
+        element={
+          <ProtectedRoute roleRequired="Vendor">
+            <VendorDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/vendor/product-management"
+        element={
+          <ProtectedRoute roleRequired="Vendor">
+            <ProductPage />
+          </ProtectedRoute>
+        }
+      />
       {/* Example Protected Route for Logged-In Users */}
       <Route
         path="/protected"
