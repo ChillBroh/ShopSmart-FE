@@ -52,7 +52,7 @@ const AdminDashboard = () => {
 
   return (
     <Container fluid className="d-flex flex-column align-items-center">
-      <Row className="w-100">
+      <Row className="w-100 d-flex justify-content-center">
         {/* Sidebar */}
 
         {/* Main Content Area */}
@@ -62,16 +62,16 @@ const AdminDashboard = () => {
             <p>Your recent activities and stats</p>
           </header>
 
-          <div className="content p-4 w-100">
+          <div className="content p-4 w-100 d-flex flex-column align-items-center">
             {/* Chart Area */}
-            <Row className="mb-4 justify-content-center">
+            <Row className="mb-4 justify-content-center w-100">
               <Col md={10} className="text-center">
                 <Line data={data} options={options} />
               </Col>
             </Row>
 
             {/* Card Data Area */}
-            <Row className="justify-content-center">
+            <Row className="justify-content-center w-100">
               <Col md={6} className="mb-4 text-center">
                 <div className="card">
                   <div className="card-body">
@@ -91,7 +91,7 @@ const AdminDashboard = () => {
               </Col>
             </Row>
 
-            <Row className="justify-content-center">
+            <Row className="justify-content-center w-100">
               <Col md={6} className="mb-4 text-center">
                 <div className="card">
                   <div className="card-body">

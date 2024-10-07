@@ -10,6 +10,10 @@ import ProductManagement from "../pages/admin/ProductManagement";
 import UserManagement from "../pages/admin/UserManagement";
 import VendorDashboard from "../pages/vendor/VendorDashboard";
 import ProductPage from "../pages/vendor/Product";
+import CSRManagement from "../pages/admin/CSRManagement";
+import CSRDashBoard from "../pages/csr/CSRDashboard";
+import UserManagementCSR from "../pages/csr/UserManagement";
+import OrderManagementCSR from "../pages/csr/OrderManagementCSR";
 
 const Router = () => {
   return (
@@ -37,6 +41,14 @@ const Router = () => {
         }
       />
       <Route
+        path="/admin/csr-management"
+        element={
+          <ProtectedRoute roleRequired="Administrator">
+            <CSRManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/admin/user-management"
         element={
           <ProtectedRoute roleRequired="Administrator">
@@ -50,6 +62,14 @@ const Router = () => {
         element={
           <ProtectedRoute roleRequired="Administrator">
             <ProductManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/order-management"
+        element={
+          <ProtectedRoute roleRequired="Administrator">
+            <OrderManagementCSR />
           </ProtectedRoute>
         }
       />
@@ -67,6 +87,31 @@ const Router = () => {
         element={
           <ProtectedRoute roleRequired="Vendor">
             <ProductPage />
+          </ProtectedRoute>
+        }
+      />
+      {/* CSR Routes */}
+      <Route
+        path="/csr/dashboard"
+        element={
+          <ProtectedRoute roleRequired="CSR">
+            <CSRDashBoard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/csr/user-management"
+        element={
+          <ProtectedRoute roleRequired="CSR">
+            <UserManagementCSR />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/csr/order-management"
+        element={
+          <ProtectedRoute roleRequired="CSR">
+            <OrderManagementCSR />
           </ProtectedRoute>
         }
       />

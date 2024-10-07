@@ -28,13 +28,6 @@ const VendorNavBar = () => {
           <Nav.Link as={Link} to="/vendor/order-management" className="px-3">
             Orders
           </Nav.Link>
-          <Nav.Link
-            as={Link}
-            to="/vendor/inventory-management"
-            className="px-3"
-          >
-            Inventory
-          </Nav.Link>
         </Nav>
         <Nav>
           <NavDropdown

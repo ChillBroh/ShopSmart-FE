@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Form, Button, Table } from "react-bootstrap";
 import axios from "../../api/axiosInstance";
 import Swal from "sweetalert2";
+import Badge from "react-bootstrap/Badge";
 
 const ProductPage = () => {
   const [productData, setProductData] = useState({
@@ -234,6 +235,8 @@ const ProductPage = () => {
               <th>Category</th>
               <th>Price</th>
               <th>Stock</th>
+              <th>Threshold</th>
+              <th>Availability</th>
               <th>Description</th>
               <th>Actions</th>
             </tr>
@@ -247,6 +250,14 @@ const ProductPage = () => {
                   <td>{product.productCategory}</td>
                   <td>{product.price}</td>
                   <td>{product.stock}</td>
+                  <td>
+                    {product.stock >= 10 ? (
+                      <Badge bg="success">Good</Badge>
+                    ) : (
+                      <Badge bg="danger">Low Stock</Badge>
+                    )}
+                  </td>
+                  <td>{product.adminApproved ? "Approved" : "Pending"}</td>
                   <td>{product.description}</td>
                   <td>
                     <Button

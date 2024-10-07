@@ -4,8 +4,10 @@ import { Navbar, Container } from "react-bootstrap";
 const Header = () => {
   return (
     <Navbar bg="light" variant="light">
-      <Container className="text-center">
-        <Navbar.Brand href="#home">ShopSmart</Navbar.Brand>
+      <Container >
+        <Navbar.Brand href="#home" >
+          ShopSmart
+        </Navbar.Brand>
       </Container>
     </Navbar>
   );

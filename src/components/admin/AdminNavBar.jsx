@@ -25,16 +25,16 @@ const AdminNavbar = () => {
             Users
           </Nav.Link>
           <Nav.Link as={Link} to="/admin/vendor-management" className="px-3">
-            Vendors
+            Add Vendors
+          </Nav.Link>
+          <Nav.Link as={Link} to="/admin/csr-management" className="px-3">
+            Add CSR
           </Nav.Link>
           <Nav.Link as={Link} to="/admin/product-management" className="px-3">
             Products
           </Nav.Link>
           <Nav.Link as={Link} to="/admin/order-management" className="px-3">
             Orders
-          </Nav.Link>
-          <Nav.Link as={Link} to="/admin/inventory-management" className="px-3">
-            Inventory
           </Nav.Link>
         </Nav>
         <Nav>
