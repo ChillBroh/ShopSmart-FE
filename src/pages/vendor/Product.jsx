@@ -16,9 +16,10 @@ const ProductPage = () => {
   const [activeTab, setActiveTab] = useState("createProduct");
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [showPending, setShowPending] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const vendorId = user?.userId; // Replace with your vendorId
+  const vendorId = user?.userId;
 
   useEffect(() => {
     if (activeTab === "viewProducts") {
@@ -76,10 +77,29 @@ const ProductPage = () => {
         (product) => product.vendorId === vendorId
       );
       setProducts(filteredProducts);
+      setShowPending(false); // Reset when viewing all products
     } catch (error) {
       Swal.fire(
         "Error",
         "Failed to fetch products. Please try again.",
+        "error"
+      );
+    }
+  };
+
+  const handleViewPendingProducts = async () => {
+    try {
+      const response = await axios.get("/Product/GetAllProducts");
+      const pendingProducts = response.data.filter(
+        (product) => product.vendorId === vendorId && !product.adminApproved
+      );
+      setProducts(pendingProducts);
+      setShowPending(true); // Set the pending filter
+      setActiveTab("viewProducts"); // Ensure we stay on the "viewProducts" tab
+    } catch (error) {
+      Swal.fire(
+        "Error",
+        "Failed to fetch pending products. Please try again.",
         "error"
       );
     }
@@ -127,6 +147,7 @@ const ProductPage = () => {
           onClick={() => {
             setActiveTab("createProduct");
             setEditingProduct(null);
+            setShowPending(false); // Ensure the pending state is reset
             setProductData({
               productName: "",
               productCategory: "0",
@@ -140,10 +161,24 @@ const ProductPage = () => {
           Create Product
         </Button>
         <Button
-          variant={activeTab === "viewProducts" ? "primary" : "outline-primary"}
-          onClick={() => setActiveTab("viewProducts")}
+          variant={
+            activeTab === "viewProducts" && !showPending
+              ? "primary"
+              : "outline-primary"
+          }
+          onClick={() => {
+            setActiveTab("viewProducts");
+            setShowPending(false); // Reset when viewing all products
+          }}
+          className="me-2"
         >
           View Products
+        </Button>
+        <Button
+          variant={showPending ? "primary" : "outline-primary"}
+          onClick={handleViewPendingProducts}
+        >
+          View Pending Products
         </Button>
       </div>
 
@@ -278,7 +313,7 @@ const ProductPage = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="text-center">
+                <td colSpan="9" className="text-center">
                   No products available.
                 </td>
               </tr>

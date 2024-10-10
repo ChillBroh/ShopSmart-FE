@@ -1,17 +1,27 @@
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { FaBell } from "react-icons/fa"; // Using Font Awesome for the notification icon
 
 const VendorNavBar = () => {
+  const [notificationCount, setNotificationCount] = useState(3); // Initial notification count
   const payload = localStorage.getItem("user");
   const user = payload ? JSON.parse(payload) : null;
   const navigate = useNavigate();
+
   const onLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("jsonwebtoken");
     navigate("/login");
     window.location.reload();
   };
+
+  // Simulate increasing notifications
+  const addNotification = () => {
+    setNotificationCount(notificationCount + 1);
+  };
+
   return (
     <Navbar bg="light" expand="lg" className="mb-4">
       <Navbar.Brand className="px-3">Vendor Panel</Navbar.Brand>
@@ -30,6 +40,29 @@ const VendorNavBar = () => {
           </Nav.Link>
         </Nav>
         <Nav>
+          <div
+            className="position-relative px-3"
+            style={{ cursor: "pointer" }}
+            onClick={addNotification}
+          >
+            <FaBell size={24} />
+            {notificationCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: "-5px",
+                  right: "-5px",
+                  background: "red",
+                  borderRadius: "50%",
+                  color: "white",
+                  padding: "2px 6px",
+                  fontSize: "12px",
+                }}
+              >
+                {notificationCount}
+              </span>
+            )}
+          </div>
           <NavDropdown
             title={user?.userName || "Admin"}
             id="basic-nav-dropdown"
