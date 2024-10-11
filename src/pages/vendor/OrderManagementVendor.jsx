@@ -3,7 +3,7 @@ import { Container, Button, Table } from "react-bootstrap";
 import Swal from "sweetalert2";
 import axios from "../../api/axiosInstance";
 
-const OrderManagementCSR = () => {
+const OrderManagementVendor = () => {
   const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState("all");
 
@@ -23,9 +23,8 @@ const OrderManagementCSR = () => {
 
   const filteredOrders = orders.filter((order) => {
     if (filter === "all") return true;
-    if (filter === "delivered") return order.orderStatus === "Delivered";
-    if (filter === "cancelRequested") return order.orderStatus === "Canceled";
-    if (filter === "done") return order.orderStatus === "Done";
+    if (filter === "processing") return order.orderStatus === "Processing";
+    if (filter === "completed") return order.orderStatus === "Done";
     return true;
   });
 
@@ -34,39 +33,16 @@ const OrderManagementCSR = () => {
       await axios.post(`Order/UpdateOrderStatus`, null, {
         params: { orderId, status: status },
       });
-      if (status === 2) {
-        Swal.fire(
-          "Delivered",
-          `Order with ID: ${orderId} Delivered successfully!`,
-          "success"
-        );
+
+      if (status === 0) {
+        Swal.fire("Reveresed", `Order is still processing!`, "success");
+      } else if (status === 1) {
+        Swal.fire("Completed", `Order Completed successfully!`, "success");
       }
+
       fetchOrders();
     } catch (error) {
       Swal.fire("Error", "Failed to do this action on this order.", "error");
-    }
-  };
-
-  const handleDelete = async (orderId) => {
-    let note = "";
-
-    const { value } = await Swal.fire({
-      title: "Add Note",
-      input: "text",
-      confirmButtonText: "Cancel Order",
-    });
-    note = value;
-
-    try {
-      await axios.delete(`Order/DeleteOrder/${orderId}`);
-      Swal.fire(
-        "Deleted",
-        `Order cancelled with ${note} and deleted successfully!`,
-        "success"
-      );
-      fetchOrders();
-    } catch (error) {
-      Swal.fire("Error", "Failed to delete order.", "error");
     }
   };
 
@@ -83,22 +59,15 @@ const OrderManagementCSR = () => {
           All Orders
         </Button>
         <Button
-          variant={filter === "delivered" ? "primary" : "outline-primary"}
-          onClick={() => setFilter("delivered")}
-          className="me-2"
-        >
-          Delivered Orders
-        </Button>
-        <Button
           variant={filter === "cancelRequested" ? "primary" : "outline-primary"}
-          onClick={() => setFilter("cancelRequested")}
+          onClick={() => setFilter("processing")}
           className="me-2"
         >
-          Cancel Requested Orders
+          New Orders
         </Button>
         <Button
           variant={filter === "processing" ? "primary" : "outline-primary"}
-          onClick={() => setFilter("done")}
+          onClick={() => setFilter("completed")}
         >
           Vendor Completed Orders
         </Button>
@@ -138,30 +107,20 @@ const OrderManagementCSR = () => {
               ) : (
                 <td>
                   <div style={{ display: "flex", gap: "8px" }}>
-                    {filter === "done" ? (
+                    {filter === "completed" ? (
+                      <Button
+                        variant="warning"
+                        onClick={() => handleStatus(order.orderId, 0)}
+                      >
+                        Mark as processing
+                      </Button>
+                    ) : filter === "processing" ? (
                       <Button
                         variant="success"
-                        onClick={() => handleStatus(order.orderId, 2)}
+                        onClick={() => handleStatus(order.orderId, 1)}
                       >
-                        Mark as Shipped
+                        Mark as Done
                       </Button>
-                    ) : (
-                      <></>
-                    )}
-                    {filter === "cancelRequested" ? (
-                      <Button
-                        variant="outline-danger"
-                        onClick={() => handleDelete(order.orderId)}
-                      >
-                        Delete Order
-                      </Button>
-                    ) : (
-                      <></>
-                    )}
-                    {filter === "delivered" ? (
-                      <p className="text-success">
-                        Order has successfully Completed
-                      </p>
                     ) : (
                       <></>
                     )}
@@ -176,4 +135,4 @@ const OrderManagementCSR = () => {
   );
 };
 
-export default OrderManagementCSR;
+export default OrderManagementVendor;

@@ -9,84 +9,27 @@ const UserManagementCSR = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [deactivatedUsers, setDeactivatedUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const { data: users } = await axios.get("User/GetAllUsers");
 
+      setPendingUsers(users.filter((user) => !user.adminOrCSRApproved));
+      setDeactivatedUsers(users.filter((user) => !user.activeUser));
+      setAllUsers(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      Swal.fire(
+        "Error",
+        "Failed to fetch users. Please try again later.",
+        "error"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const pendingResponse = await axios.get(
-          "/User/GetPendingApprovalUsers"
-        );
-        setPendingUsers(pendingResponse.data);
-
-        const deactivatedResponse = await axios.get(
-          "/User/GetDeactivatedUsers"
-        );
-        setDeactivatedUsers(deactivatedResponse.data);
-
-        const allUsersResponse = await axios.get("/User/GetAllUsers");
-        setAllUsers(allUsersResponse.data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        // Dummy data as fallback
-        const dummyPendingUsers = [
-          {
-            userId: "88850d60-5497-4139-b580-f66da96cd981",
-            userName: "IsharaCustomer1",
-            email: "isharaCustomer1@example.com",
-            phoneNumber: "0766859740",
-            role: "Customer",
-            status: "pending",
-          },
-          {
-            userId: "98850d60-5497-4139-b580-f66da96cd982",
-            userName: "IsharaCustomer2",
-            email: "isharaCustomer2@example.com",
-            phoneNumber: "0766859740",
-            role: "Customer",
-            adminOrCSRApproved: false,
-            status: "pending",
-          },
-        ];
-        const dummyDeactivatedUsers = [
-          {
-            userId: "a8850d60-5497-4139-b580-f66da96cd983",
-            userName: "IsharaCustomer3",
-            email: "isharaCustomer3@example.com",
-            phoneNumber: "0766859740",
-            role: "Customer",
-            adminOrCSRApproved: false,
-            status: "deactivated",
-          },
-          {
-            userId: "b8850d60-5497-4139-b580-f66da96cd984",
-            userName: "IsharaCustomer4",
-            email: "isharaCustomer4@example.com",
-            phoneNumber: "0766859740",
-            role: "Customer",
-            adminOrCSRApproved: false,
-            status: "deactivated",
-          },
-        ];
-        const dummyAllUsers = [
-          ...dummyPendingUsers,
-          ...dummyDeactivatedUsers,
-          {
-            userId: "c8850d60-5497-4139-b580-f66da96cd985",
-            userName: "IsharaCustomer5",
-            email: "isharaCustomer5@example.com",
-            phoneNumber: "0766859740",
-            role: "Customer",
-            adminOrCSRApproved: false,
-            status: "active",
-          },
-        ];
-
-        setPendingUsers(dummyPendingUsers);
-        setDeactivatedUsers(dummyDeactivatedUsers);
-        setAllUsers(dummyAllUsers);
-      }
-    };
-
     fetchUsers();
   }, []);
 
@@ -103,7 +46,7 @@ const UserManagementCSR = () => {
       );
     } catch (error) {
       console.error("Error approving user:", error);
-      Swal.fire("Error", "Failed to approve user.", "error");
+      Swal.fire("Error", "Failed to approve user. Please try again.", "error");
     }
   };
 
@@ -116,53 +59,50 @@ const UserManagementCSR = () => {
       Swal.fire("Declined", `User with ID: ${userId} declined.`, "error");
     } catch (error) {
       console.error("Error declining user:", error);
-      Swal.fire("Error", "Failed to decline user.", "error");
+      Swal.fire("Error", "Failed to decline user. Please try again.", "error");
     }
   };
 
-  const handleReactivate = async (userId) => {
+  const handleActivateDeactivate = async (userId) => {
     try {
-      await axios.post(`/User/ReactivateUser/${userId}`);
-      setDeactivatedUsers((prevUsers) =>
-        prevUsers.filter((user) => user.userId !== userId)
+      await axios.put(
+        `User/ActivateOrDeactivateUser?userId=${userId}&userActivateDeactivate=1`
       );
-      Swal.fire(
-        "Reactivated",
-        `User with ID: ${userId} reactivated successfully!`,
-        "success"
-      );
+      Swal.fire({
+        icon: "success",
+        title: "User status updated successfully!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      fetchUsers();
     } catch (error) {
-      console.error("Error reactivating user:", error);
-      Swal.fire("Error", "Failed to reactivate user.", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Error updating user status",
+        text: error.response?.data?.message || "An error occurred",
+      });
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Container className="my-5">
       <h2 className="text-center mb-4">User Management</h2>
       <div className="text-center mb-4">
-        <Button
-          variant={activeTab === "pendingUsers" ? "primary" : "outline-primary"}
-          onClick={() => setActiveTab("pendingUsers")}
-          className="me-2"
-        >
-          Pending Users
-        </Button>
-        <Button
-          variant={
-            activeTab === "deactivatedUsers" ? "primary" : "outline-primary"
-          }
-          onClick={() => setActiveTab("deactivatedUsers")}
-          className="me-2"
-        >
-          Deactivated Accounts
-        </Button>
-        <Button
-          variant={activeTab === "allUsers" ? "primary" : "outline-primary"}
-          onClick={() => setActiveTab("allUsers")}
-        >
-          All Users
-        </Button>
+        {["pendingUsers", "deactivatedUsers", "allUsers"].map((tab) => (
+          <Button
+            key={tab}
+            variant={activeTab === tab ? "primary" : "outline-primary"}
+            onClick={() => setActiveTab(tab)}
+            className="me-2"
+          >
+            {tab.charAt(0).toUpperCase() +
+              tab.slice(1).replace(/Users/, " Accounts")}
+          </Button>
+        ))}
       </div>
 
       {activeTab === "pendingUsers" && (
@@ -225,7 +165,7 @@ const UserManagementCSR = () => {
                 <td>
                   <Button
                     variant="warning"
-                    onClick={() => handleReactivate(user.userId)}
+                    onClick={() => handleActivateDeactivate(user.userId)}
                   >
                     Reactivate
                   </Button>
@@ -243,6 +183,7 @@ const UserManagementCSR = () => {
               <th>ID</th>
               <th>Name</th>
               <th>Email</th>
+              <th>Role</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -252,16 +193,11 @@ const UserManagementCSR = () => {
                 <td>{user.userId}</td>
                 <td>{user.userName}</td>
                 <td>{user.email}</td>
+                <td>{user.role}</td>
                 <td>
-                  {user.status === "active" ? (
-                    <Badge bg="success">active</Badge>
-                  ) : user.status === "deactivated" ? (
-                    <Badge bg="danger">Deactivated</Badge>
-                  ) : (
-                    <Badge bg="warning" text="dark">
-                      pending
-                    </Badge>
-                  )}{" "}
+                  <Badge bg={user.activeUser ? "success" : "danger"}>
+                    {user.activeUser ? "Active" : "Deactivated"}
+                  </Badge>
                 </td>
               </tr>
             ))}

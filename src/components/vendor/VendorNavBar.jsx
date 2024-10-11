@@ -1,7 +1,7 @@
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaBell } from "react-icons/fa"; // Using Font Awesome for the notification icon
 
 const VendorNavBar = () => {
@@ -18,9 +18,9 @@ const VendorNavBar = () => {
   };
 
   // Simulate increasing notifications
-  const addNotification = () => {
-    setNotificationCount(notificationCount + 1);
-  };
+  useEffect(() => {
+    setNotificationCount(1);
+  });
 
   return (
     <Navbar bg="light" expand="lg" className="mb-4">
@@ -40,11 +40,7 @@ const VendorNavBar = () => {
           </Nav.Link>
         </Nav>
         <Nav>
-          <div
-            className="position-relative px-3"
-            style={{ cursor: "pointer" }}
-            onClick={addNotification}
-          >
+          <div className="position-relative px-3" style={{ cursor: "pointer" }}>
             <FaBell size={24} />
             {notificationCount > 0 && (
               <span

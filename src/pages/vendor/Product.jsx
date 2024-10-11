@@ -288,8 +288,10 @@ const ProductPage = () => {
                   <td>
                     {product.stock >= 10 ? (
                       <Badge bg="success">Good</Badge>
+                    ) : product.stock == 0 ? (
+                      <Badge bg="danger">Stock Empty</Badge>
                     ) : (
-                      <Badge bg="danger">Low Stock</Badge>
+                      <Badge bg="warning">Low Stock</Badge>
                     )}
                   </td>
                   <td>{product.adminApproved ? "Approved" : "Pending"}</td>

@@ -14,6 +14,7 @@ import CSRManagement from "../pages/admin/CSRManagement";
 import CSRDashBoard from "../pages/csr/CSRDashboard";
 import UserManagementCSR from "../pages/csr/UserManagement";
 import OrderManagementCSR from "../pages/csr/OrderManagementCSR";
+import OrderManagementVendor from "../pages/vendor/OrderManagementVendor";
 
 const Router = () => {
   return (
@@ -87,6 +88,14 @@ const Router = () => {
         element={
           <ProtectedRoute roleRequired="Vendor">
             <ProductPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/vendor/order-management"
+        element={
+          <ProtectedRoute roleRequired="Vendor">
+            <OrderManagementVendor />
           </ProtectedRoute>
         }
       />
