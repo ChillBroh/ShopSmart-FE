@@ -17,9 +17,14 @@ const VendorNavBar = () => {
     window.location.reload();
   };
 
-  // Simulate increasing notifications
   useEffect(() => {
-    setNotificationCount(1);
+    const products = localStorage.getItem("products");
+    const parsedProducts = JSON.parse(products);
+    const thresholdProducts = parsedProducts.filter((product) => {
+      return product.stock <= 10;
+    });
+    const thresholdCount = thresholdProducts.length;
+    setNotificationCount(thresholdCount);
   });
 
   return (

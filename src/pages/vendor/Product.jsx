@@ -77,7 +77,8 @@ const ProductPage = () => {
         (product) => product.vendorId === vendorId
       );
       setProducts(filteredProducts);
-      setShowPending(false); // Reset when viewing all products
+      localStorage.setItem("products", JSON.stringify(filteredProducts));
+      setShowPending(false);
     } catch (error) {
       Swal.fire(
         "Error",
